@@ -13,9 +13,11 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 IncludeDir = {}
 IncludeDir["GLFW"] = "HazelEngine/vendor/GLFW/include"
 IncludeDir["Glad"] = "HazelEngine/vendor/GLAD/include"
+IncludeDir["ImGui"] = "HazelEngine/vendor/imgui"
 
 include "HazelEngine/vendor/GLFW"
 include "HazelEngine/vendor/Glad"
+include "HazelEngine/vendor/imgui"
 
 project "HazelEngine"
 	location "HazelEngine"
@@ -37,12 +39,14 @@ project "HazelEngine"
 		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include",
 		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.Glad}"
+		"%{IncludeDir.Glad}",
+		"%{IncludeDir.ImGui}"
 	}
 
 	links{
 		"GLFW",
 		"Glad",
+		"ImGui",
 		"opengl32.lib"
 	}
 
@@ -54,7 +58,8 @@ project "HazelEngine"
 		defines{
 			"HZ_PLATFORM_WINDOWS",
 			"HZ_BUILD_DLL",
-			"GLFW_INCLUDE_NONE"
+			"GLFW_INCLUDE_NONE",
+			"IMGL3W_IMPL"
 		}
 
 		postbuildcommands{

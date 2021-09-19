@@ -1,5 +1,6 @@
 workspace "HazelEngine"
 	architecture "x64"
+	startproject "Sandbox"
 	
 	configurations {
 		"Debug", 
@@ -14,6 +15,7 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "HazelEngine/vendor/GLFW/include"
 IncludeDir["Glad"] = "HazelEngine/vendor/GLAD/include"
 IncludeDir["ImGui"] = "HazelEngine/vendor/imgui"
+IncludeDir["glm"] = "HazelEngine/vendor/glm"
 
 include "HazelEngine/vendor/GLFW"
 include "HazelEngine/vendor/Glad"
@@ -23,6 +25,7 @@ project "HazelEngine"
 	location "HazelEngine"
 	kind "SharedLib"
 	language "C++"
+	staticruntime "off"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -40,7 +43,8 @@ project "HazelEngine"
 		"%{prj.name}/vendor/spdlog/include",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
-		"%{IncludeDir.ImGui}"
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.glm}"
 	}
 
 	links{
@@ -52,7 +56,6 @@ project "HazelEngine"
 
 	filter "system:windows"
 		cppdialect "C++17"
-		staticruntime "On"
 		systemversion "latest"
 
 		defines{
@@ -63,28 +66,29 @@ project "HazelEngine"
 		}
 
 		postbuildcommands{
-			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox")
+			("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. outputdir .. "/Sandbox/\"")
 		}
 
 	filter "configurations:Debug"
 		defines "HZ_DEBUG"
-		buildoptions "/MDd"
+		runtime "Debug" 
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "HZ_RELEASE"
-		buildoptions "/MD"
+		runtime "Release"
 		symbols "On"
 
 	filter "configurations:Dist"
 		defines "HZ_DIST"
-		buildoptions "/MD"
+		runtime "Release"
 		symbols "On"
 
 project "Sandbox"
 	location "Sandbox"
 	kind "ConsoleApp"
 	language "C++"
+	staticruntime "off"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -96,7 +100,8 @@ project "Sandbox"
 
 	includedirs{
 		"HazelEngine/vendor/spdlog/include",
-		"HazelEngine/src"
+		"HazelEngine/src",
+		"%{IncludeDir.glm}"
 	}
 
 	links {
@@ -105,7 +110,6 @@ project "Sandbox"
 
 	filter "system:windows"
 		cppdialect "C++17"
-		staticruntime "On"
 		systemversion "latest"
 
 		defines{
@@ -114,15 +118,15 @@ project "Sandbox"
 
 	filter "configurations:Debug"
 		defines "HZ_DEBUG"
-		buildoptions "/MDd"
+		runtime "Debug"
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "HZ_RELEASE"
-		buildoptions "/MD"
+		runtime "Release"
 		symbols "On"
 
 	filter "configurations:Dist"
 		defines "HZ_DIST"
-		buildoptions "/MD"
+		runtime "Release"
 		symbols "On"
